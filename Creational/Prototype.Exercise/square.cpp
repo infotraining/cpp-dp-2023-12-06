@@ -8,7 +8,7 @@ using namespace Drawing;
 namespace
 {
     bool is_registered = SingletonShapeFactory::instance()
-                             .register_creator(Square::id, &make_unique<Square>);
+                             .register_creator(Square::id, [] { return make_unique<Square>(); });
 }
 
 Square::Square(int x, int y, int size)

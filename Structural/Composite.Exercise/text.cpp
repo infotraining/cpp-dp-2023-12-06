@@ -7,7 +7,7 @@ using namespace Drawing;
 namespace
 {
     bool is_registered = SingletonShapeFactory::instance().register_creator(
-        Text::id, &make_unique<Text>);
+        Text::id, [] { return make_unique<Text>(); });
 }
 
 Text::Text(int x, int y, const string& text)

@@ -9,7 +9,7 @@ using namespace IO;
 namespace
 {
     bool is_registered = SingletonShapeRWFactory::instance()
-                             .register_creator(make_type_index<Square>(), &make_unique<SquareReaderWriter>);
+                             .register_creator(make_type_index<Square>(), [] { return make_unique<SquareReaderWriter>(); });
 }
 
 void SquareReaderWriter::read(Shape& shp, istream& in)

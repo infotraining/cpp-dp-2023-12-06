@@ -10,7 +10,7 @@ namespace
 {
     bool is_registered
         = SingletonShapeRWFactory::instance()
-              .register_creator(make_type_index<Circle>(), make_unique<CircleReaderWriter>);
+              .register_creator(make_type_index<Circle>(), [] { return make_unique<CircleReaderWriter>(); });
 }
 
 void CircleReaderWriter::read(Shape& shp, std::istream& in)

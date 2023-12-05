@@ -14,7 +14,7 @@ protected:
     std::string name_;
 
 public:
-    Component(const std::string& name) : name_(name)
+    explicit Component(const std::string& name) : name_(name)
     {
     }
 	Component(const Component&) = default;
@@ -33,7 +33,7 @@ private:
     std::list<ComponentPtr> children;
 
 public:
-    Composite(const std::string& name) : Component(name)
+    explicit Composite(const std::string& name) : Component(name)
     {
     }
 
@@ -60,7 +60,7 @@ public:
 class Leaf : public Component
 {
 public:
-    Leaf(const std::string& name) : Component(name)
+    explicit Leaf(const std::string& name) : Component(name)
     {
     }
 

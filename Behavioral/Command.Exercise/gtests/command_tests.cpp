@@ -97,9 +97,9 @@ TEST_F(AddTextCmd_Execute, CommandIsStoredInHistory)
 {
     add_text_cmd.execute();
 
-    auto saved_cmd = cmd_history.pop_last_command();
-
-    ASSERT_EQ(typeid(*saved_cmd), typeid(AddTextCmd));
+    auto saved_cmd_ptr = cmd_history.pop_last_command();
+    auto& saved_cmd = *saved_cmd_ptr;
+    ASSERT_EQ(typeid(saved_cmd), typeid(AddTextCmd));
 }
 
 //-----------------------------------------------------------------
