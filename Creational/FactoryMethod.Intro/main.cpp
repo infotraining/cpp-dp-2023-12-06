@@ -91,7 +91,7 @@ void most_common_used_factory_method()
 {
     std::vector<int> vec = {1, 2, 3};
 
-    for(auto it = std::ranges::begin(vec); it != std::ranges::end(vec); ++it) // vec.begin() & vec.end() - factory methods
+    for(auto it = std::begin(vec); it != std::end(vec); ++it) // vec.begin() & vec.end() - factory methods
         std::cout << *it << " ";
     std::cout << "\n";
 }

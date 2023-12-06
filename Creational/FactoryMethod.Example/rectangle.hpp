@@ -2,6 +2,7 @@
 #define RECTANGLE_HPP
 
 #include "shape.hpp"
+#include "shape_readers_writers/rectangle_reader_writer.hpp"
 
 namespace Drawing
 {
@@ -36,6 +37,11 @@ namespace Drawing
         }
 
         void draw() const override;
+
+        std::unique_ptr<IO::ShapeReaderWriter> create_reader_writer() override
+        {
+            return std::make_unique<IO::RectangleReaderWriter>();
+        }
     };
 }
 #endif // RECTANGLE_HPP

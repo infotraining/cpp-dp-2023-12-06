@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <functional>
 
 using Track = std::vector<char>;
 

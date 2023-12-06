@@ -2,6 +2,7 @@
 #define SQUARE_HPP
 
 #include "rectangle.hpp"
+#include "shape_readers_writers/square_reader_writer.hpp"
 
 namespace Drawing
 {
@@ -26,6 +27,11 @@ namespace Drawing
         void draw() const override;
 
         void move(int x, int y) override;
+
+        std::unique_ptr<IO::ShapeReaderWriter> create_reader_writer() override
+        {
+            return std::make_unique<IO::SquareReaderWriter>();
+        }
     };
 }
 
