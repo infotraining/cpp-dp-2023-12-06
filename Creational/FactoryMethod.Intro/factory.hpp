@@ -63,6 +63,8 @@ public:
     }
 };
 
+namespace Canonical
+{
 // "Creator"
 class MusicServiceCreator
 {
@@ -124,6 +126,48 @@ public:
     std::unique_ptr<MusicService> create_music_service() override
     {
         return std::make_unique<FilesystemMusicService>(path_);
+    }
+};
+
+}
+
+using MusicServiceCreator = std::function<std::unique_ptr<MusicService>()>;
+
+class TidalServiceCreator 
+{
+    std::string user_name_;
+    std::string secret_;
+
+public:
+    TidalServiceCreator(const std::string& user_name, const std::string& secret)
+        : user_name_{user_name}
+        , secret_{secret}
+    {
+    }
+
+    std::unique_ptr<MusicService> operator()()
+    {
+        return std::make_unique<TidalService>(user_name_, secret_);
+    }
+};
+
+class SpotifyServiceCreator
+{
+    std::string user_name_;
+    std::string secret_;
+    int timeout_;
+
+public:
+    SpotifyServiceCreator(const std::string& user_name, const std::string& secret, int timeout)
+        : user_name_{user_name}
+        , secret_{secret}
+        , timeout_{timeout}
+    {
+    }
+
+    std::unique_ptr<MusicService> operator()()
+    {
+        return std::make_unique<SpotifyService>(user_name_, secret_, timeout_);
     }
 };
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <ranges>
 
 namespace StronglyCoupled
 {
@@ -22,6 +23,7 @@ namespace StronglyCoupled
 
             std::optional<Track> track = music_service.get_track(track_title);
 
+            // using of product
             if (track)
             {
                 std::cout << "Playing track: ";
@@ -39,10 +41,10 @@ namespace StronglyCoupled
 
 class MusicApp
 {
-    std::shared_ptr<MusicServiceCreator> music_service_creator_;
+    MusicServiceCreator music_service_creator_;
 
 public:
-    MusicApp(std::shared_ptr<MusicServiceCreator> music_service_creator)
+    MusicApp(MusicServiceCreator music_service_creator)
         : music_service_creator_(music_service_creator)
     {
     }
@@ -50,7 +52,7 @@ public:
     void play(const std::string& track_title)
     {
         // creation of the object
-        std::unique_ptr<MusicService> music_service = music_service_creator_->create_music_service();
+        std::unique_ptr<MusicService> music_service = music_service_creator_();
 
         // usage of the object
         std::optional<Track> track = music_service->get_track(track_title);
@@ -69,15 +71,37 @@ public:
     }
 };
 
+namespace StaticFactory
+{
+    std::unique_ptr<MusicService> create_music_service(const std::string& id)
+    {
+        if (id == "Tidal")
+            return std::make_unique<TidalService>("tidal_user", "KJH8324d&df");
+        else if (id == "Spotify")
+            return std::make_unique<SpotifyService>("spotify_user", "rjdaslf276%2", 45);
+
+        throw std::invalid_argument("ID not supported");
+    }   
+}
+
 // parametrized factory
-using MusicServiceFactory = std::unordered_map<std::string, std::shared_ptr<MusicServiceCreator>>;
+using MusicServiceFactory = std::unordered_map<std::string, MusicServiceCreator>;
+
+void most_common_used_factory_method()
+{
+    std::vector<int> vec = {1, 2, 3};
+
+    for(auto it = std::ranges::begin(vec); it != std::ranges::end(vec); ++it) // vec.begin() & vec.end() - factory methods
+        std::cout << *it << " ";
+    std::cout << "\n";
+}
 
 int main()
 {
     MusicServiceFactory music_service_factory;
-    music_service_factory.emplace("Tidal", std::make_shared<TidalServiceCreator>("tidal_user", "KJH8324d&df"));
-    music_service_factory.emplace("Spotify", std::make_shared<SpotifyServiceCreator>("spotify_user", "rjdaslf276%2", 45));
-    music_service_factory.emplace("Filesystem", std::make_shared<FsMusicServiceCreator>());
+    music_service_factory.emplace("Tidal", TidalServiceCreator("tidal_user", "KJH8324d&df"));
+    music_service_factory.emplace("Spotify", SpotifyServiceCreator("spotify_user", "rjdaslf276%2", 45));
+    music_service_factory.emplace("Filesystem", []{ return std::make_unique<FilesystemMusicService>("/music"); });
 
     std::string id_from_config = "Tidal";
     MusicApp app(music_service_factory.at(id_from_config));

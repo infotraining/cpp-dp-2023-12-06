@@ -1,8 +1,9 @@
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <functional>
+#include <variant>
 
 using namespace std::literals;
 
@@ -14,7 +15,7 @@ namespace DynamicPolymorphism
         virtual std::string convert_signal(const std::string& string_vibrations) const = 0;
         virtual ~Pickup() = default;
     };
-    
+
     class SingleCoil : public Pickup
     {
     public:
@@ -110,7 +111,7 @@ namespace DuckTyping
 
         Guitar(Pickup pickup)
             : pickup{std::move(pickup)}
-        {      
+        {
         }
 
         void play(const std::string& sound)
@@ -120,42 +121,217 @@ namespace DuckTyping
     };
 }
 
-int main()
+namespace DynamicPolymorphism
+{
+    struct Point
+    {
+        int x, y;
+    };
+
+    class Shape
+    {
+    public:
+        virtual ~Shape() = default;
+
+        virtual void move(int dx, int dy) = 0;
+        virtual void draw() const = 0;
+    };
+
+    struct ShapeBase : public Shape
+    {
+        Point coord;
+
+        ShapeBase(int x, int y)
+            : coord{x, y}
+        {
+        }
+
+        void move(int dx, int dy) override
+        {
+            coord.x += dx;
+            coord.y += dy;
+        }
+    };
+
+    struct Rectangle : public ShapeBase
+    {
+        int width, height;
+
+        Rectangle(int x, int y, int w, int h)
+            : ShapeBase{x, y}
+            , width{w}
+            , height{h}
+        {
+        }
+
+        void draw() const override
+        {
+            std::cout << "Drawing Rectangle at (" << coord.x << ", " << coord.y << "); w: " << width << "; h: " << height << "\n";
+        }
+    };
+
+    struct Circle : public ShapeBase
+    {
+        int radius;
+
+        Circle(int x, int y, int r)
+            : ShapeBase{x, y}
+            , radius{r}
+        {
+        }
+
+        void draw() const override
+        {
+            std::cout << "Drawing Circle at (" << coord.x << ", " << coord.y << "); r: " << radius << "\n";
+        }
+    };
+}
+
+namespace StaticPolymorphism
+{
+    struct Point
+    {
+        int x, y;
+    };
+
+    struct ShapeBase
+    {
+        Point coord;
+
+        ShapeBase(int x, int y)
+            : coord{x, y}
+        {
+        }
+
+        void move(int dx, int dy)
+        {
+            coord.x += dx;
+            coord.y += dy;
+        }
+    };
+
+    struct Rectangle : public ShapeBase
+    {
+        int width, height;
+
+        Rectangle(int x, int y, int w, int h)
+            : ShapeBase{x, y}
+            , width{w}
+            , height{h}
+        {
+        }
+
+        void draw() const
+        {
+            std::cout << "Drawing Rectangle at (" << coord.x << ", " << coord.y << "); w: " << width << "; h: " << height << "\n";
+        }
+    };
+
+    struct Circle : public ShapeBase
+    {
+        int radius;
+
+        Circle(int x, int y, int r)
+            : ShapeBase{x, y}
+            , radius{r}
+        {
+        }
+
+        void draw() const
+        {
+            std::cout << "Drawing Circle at (" << coord.x << ", " << coord.y << "); r: " << radius << "\n";
+        }
+    };
+
+    using ShapeVariant = std::variant<Circle, Rectangle>;
+
+    class Shape
+    {
+        ShapeVariant shp;
+    public:
+        template <typename T>
+        Shape(T shape) : shp(shape)
+        {}
+
+        void move(int dx, int dy)
+        {
+            std::visit([=](auto& s) { s.move(dx, dy); }, shp);
+        }
+
+        void draw() const
+        {
+            std::visit([](auto& s) { s.draw(); }, shp);
+        }
+    };
+}
+
+void shapes()
 {
     {
         using namespace DynamicPolymorphism;
 
-        Guitar strat{std::make_unique<SingleCoil>()};
-        strat.play("D-power-cord");
+        std::vector<std::unique_ptr<Shape>> shapes;
+        shapes.push_back(std::make_unique<Circle>(10, 20, 40));
+        shapes.push_back(std::make_unique<Rectangle>(10, 20, 40, 400));
 
-        Guitar les_paul{std::make_unique<Humbucker>()};
-        les_paul.play("D-power-cord");
+        for (const auto& shp : shapes)
+            shp->draw();
     }
 
     {
         using namespace StaticPolymorphism;
+        Shape shp = Rectangle(10, 20, 300, 400);
+        shp.draw();
+        shp = Circle(100, 200, 400);
+        shp.draw();
 
-        Guitar strat{SingleCoil{}};
-        strat.play("D-power-cord");
+        std::vector<Shape> shapes;
+        shapes.push_back(shp);
+        shapes.push_back(Rectangle(0, 0, 100, 200));
 
-        Guitar<Humbucker> les_paul;
-        les_paul.play("D-power-cord");
+        for (const auto& shp : shapes)
+            shp.draw();
     }
+}
 
-    {
-        using namespace DuckTyping;
+int main()
+{
+    // {
+    //     using namespace DynamicPolymorphism;
 
-        SingleCoil sc;
+    //     Guitar strat{std::make_unique<SingleCoil>()};
+    //     strat.play("D-power-cord");
 
-        Guitar g{std::move(sc)};
+    //     Guitar les_paul{std::make_unique<Humbucker>()};
+    //     les_paul.play("D-power-cord");
+    // }
 
-        g.play("D-power-cord");
+    // {
+    //     using namespace StaticPolymorphism;
 
-        g.pickup = [](const std::string& string_vibrations)
-        {
-            return "strong, noiseless "s + string_vibrations;
-        };
+    //     Guitar strat{SingleCoil{}}; /// CTAD
+    //     strat.play("D-power-cord");
 
-        g.play("A-power-cord");
-    }
+    //     Guitar<Humbucker> les_paul;
+    //     les_paul.play("D-power-cord");
+    // }
+
+    // {
+    //     using namespace DuckTyping;
+
+    //     SingleCoil sc;
+
+    //     Guitar g{std::move(sc)};
+
+    //     g.play("D-power-cord");
+
+    //     g.pickup = [](const std::string& string_vibrations)
+    //     {
+    //         return "strong, noiseless "s + string_vibrations;
+    //     };
+
+    //     g.play("A-power-cord");
+    // }
+
+    shapes();
 }
