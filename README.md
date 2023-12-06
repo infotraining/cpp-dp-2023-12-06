@@ -4,6 +4,10 @@
 
 * https://infotraining.bitbucket.io/cpp-dp
 
+## Video
+
+* https://infotrainingszkolenia-my.sharepoint.com/:v:/g/personal/krystian_piekos_infotraining_pl/Eaonrkxo6nBKnBcnVDi_zKkBDQUHgqKG7a9YFV96KZdHxw?e=KpCEjM&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+
 ## Konfiguracja środowiska
 
 Proszę wybrać jedną z poniższych opcji:
