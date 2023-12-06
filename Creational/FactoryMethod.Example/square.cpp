@@ -1,6 +1,10 @@
 #include "square.hpp"
 #include <cassert>
 
+// static bool is_registered = 
+//     SingletonShapeFactory::instance()
+//         .register_creator(Drawing::Square::id, [] { return std::make_unique<Drawing::Square>(); });
+
 Drawing::Square::Square(int x, int y, int size)
     : rect_{x, y, size, size}
 {

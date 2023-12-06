@@ -6,10 +6,10 @@
 #include <functional>
 #include <unordered_map>
 
-#include "rectangle.hpp"
 #include "shape.hpp"
 #include "shape_readers_writers/rectangle_reader_writer.hpp"
 #include "shape_readers_writers/square_reader_writer.hpp"
+#include "rectangle.hpp"
 #include "square.hpp"
 
 using namespace std;
@@ -124,9 +124,11 @@ public:
 
 int main()
 {
+    // bootstrapping
     ShapeFactory shape_factory;
     shape_factory.register_creator(Rectangle::id, [] { return std::make_unique<Rectangle>(); });
     shape_factory.register_creator(Square::id, [] { return std::make_unique<Square>(); });
+    //shape_factory.register_creator(Circle::id, [] { return std::make_unique<Circle>(); });
 
     cout << "Start..." << endl;
 

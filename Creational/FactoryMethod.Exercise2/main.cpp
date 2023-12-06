@@ -1,3 +1,6 @@
+#include "shape.hpp"
+#include "shape_factories.hpp"
+
 #include <cassert>
 #include <fstream>
 #include <functional>
@@ -7,9 +10,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "shape.hpp"
-#include "shape_factories.hpp"
-
 using namespace std;
 using namespace Drawing;
 using namespace Drawing::IO;
@@ -17,13 +17,11 @@ using namespace Drawing::IO;
 class GraphicsDoc
 {
     vector<unique_ptr<Shape>> shapes_;
-    ShapeFactory& shape_factory_;
     ShapeRWFactory& shape_rw_factory_;
 
 public:
-    GraphicsDoc(ShapeFactory& shape_factory, ShapeRWFactory& shape_rw_factory)
-        : shape_factory_{shape_factory}
-        , shape_rw_factory_{shape_rw_factory}
+    GraphicsDoc(ShapeRWFactory& shape_rw_factory)
+        : shape_rw_factory_{shape_rw_factory}
     {
     }
 
@@ -58,7 +56,7 @@ public:
 
             cout << "Loading " << shape_id << "..." << endl;
 
-            auto shape = shape_factory_.create(shape_id);
+            auto shape = get_shape_factory_instance().create(shape_id);
             auto shape_rw = shape_rw_factory_.create(make_type_index(*shape));
 
             shape_rw->read(*shape, file_in);
@@ -77,13 +75,19 @@ public:
             shape_rw->write(*shp, file_out);
         }
     }
+
+protected:
+    virtual ShapeFactory& get_shape_factory_instance()
+    {
+        return SingletonShapeFactory::instance();
+    }
 };
 
 int main()
 {
     cout << "Start..." << endl;
 
-    GraphicsDoc doc(SingletonShapeFactory::instance(), SingletonShapeRWFactory::instance());
+    GraphicsDoc doc(SingletonShapeRWFactory::instance());
 
     doc.load("drawing_fm_exercise1.txt");
 

@@ -11,19 +11,13 @@ public:
 
     static Singleton& instance()
     {
-        if (!instance_)
-        {
-            instance_ = new Singleton();
-        }
-
-        return *instance_;
+        static Singleton unique_instance;
+        return unique_instance;
     }
 
     void do_something();
 
 private:
-    static Singleton* instance_; // uniqueInstance
-
     Singleton() // disallows creation of new instances outside the class
     {
         std::cout << "Constructor of singleton" << std::endl;
@@ -34,8 +28,6 @@ private:
         std::cout << "Singleton has been destroyed!" << std::endl;
     }
 };
-
-Singleton* Singleton::instance_ = nullptr;
 
 void Singleton::do_something()
 {

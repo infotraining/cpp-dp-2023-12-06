@@ -1,5 +1,12 @@
 #include "rectangle.hpp"
 
+// namespace 
+// {
+//     bool is_registered = 
+//         SingletonShapeFactory::instance()
+//             .register_creator(Drawing::Rectangle::id, [] { return std::make_unique<Drawing::Rectangle>(); });
+// }
+
 Drawing::Rectangle::Rectangle(int x, int y, int w, int h)
     : ShapeBase{x, y}
     , width_{w}
