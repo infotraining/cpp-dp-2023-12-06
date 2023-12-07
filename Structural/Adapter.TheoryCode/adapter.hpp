@@ -2,6 +2,7 @@
 #define ADAPTER_HPP_
 
 #include <iostream>
+#include <memory>
 
 // "Target"
 class Target

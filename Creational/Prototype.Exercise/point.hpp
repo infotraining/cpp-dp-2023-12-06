@@ -2,6 +2,7 @@
 #define POINT_HPP
 
 #include <iostream>
+#include <memory>
 
 namespace Drawing
 {
