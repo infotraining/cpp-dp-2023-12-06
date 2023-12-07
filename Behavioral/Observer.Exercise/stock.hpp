@@ -19,7 +19,7 @@ class Stock
 private:
     std::string symbol_;
     double price_;
-    // TODO - kontener przechowywujacy obserwatorow
+    // TODO - container that stores registered observers
 public:
     Stock(const std::string& symbol, double price) : symbol_(symbol), price_(price)
     {
@@ -35,15 +35,15 @@ public:
         return price_;
     }
 
-    // TODO: rejestracja obserwatora
+    // TODO: register the observer
 
-    // TODO: wyrejestrowanie obserwatora
+    // TODO: unregister the observer
 
     void set_price(double price)
     {
         price_ = price;
 
-        // TODO: powiadomienie inwestorow o zmianie kursu...
+        // TODO: sending notification to observers
     }
 };
 
