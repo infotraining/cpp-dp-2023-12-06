@@ -13,7 +13,7 @@ namespace Drawing
         public:
             void read(Shape& shp, std::istream& in) override
             {
-                Circle& circle = dynamic_cast<Circle&>(shp);
+                Circle& circle = static_cast<Circle&>(shp);
                 Point pt;
                 int r;
                 in >> pt >> r;
@@ -23,7 +23,7 @@ namespace Drawing
 
             void write(const Shape& shp, std::ostream& out) override
             {
-                const Circle& circle = dynamic_cast<const Circle&>(shp);
+                const Circle& circle = static_cast<const Circle&>(shp);
                 out << Circle::id << " " << circle.coord().x << " " << circle.coord().y << " " << circle.radius() << "\n";
             }
         };
