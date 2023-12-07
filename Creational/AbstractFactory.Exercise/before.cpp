@@ -63,6 +63,8 @@ public:
     }
 };
 
+///////////////////////////////////////////////////////////////////
+// Motif Widgets
 
 class MotifButton : public Button
 {
@@ -85,6 +87,9 @@ public:
         cout << "MotifMenu { " << text() << " }\n";
     }
 };
+
+///////////////////////////////////////////////////////////////////
+// Windows Widgets
 
 class WindowsButton : public Button
 {
@@ -129,7 +134,6 @@ public:
 
 class WindowOne : public Window
 {
-
 public:
     WindowOne()
     {
