@@ -1,3 +1,6 @@
+#include "shape.hpp"
+#include "shape_factories.hpp"
+
 #include <cassert>
 #include <fstream>
 #include <functional>
@@ -6,9 +9,6 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
-
-#include "shape.hpp"
-#include "shape_factories.hpp"
 
 using namespace std;
 using namespace Drawing;
@@ -26,6 +26,14 @@ public:
         : shape_factory_{shape_factory}
         , shape_rw_factory_{shape_rw_factory}
     {
+    }
+
+    GraphicsDoc(const GraphicsDoc& source)
+        : shape_factory_{source.shape_factory_}
+        , shape_rw_factory_{source.shape_rw_factory_}
+    {
+        for(const auto& shp : source.shapes_)
+            shapes_.push_back(shp->clone());
     }
 
     void add(unique_ptr<Shape> shp)
@@ -92,8 +100,10 @@ int main()
 
     doc.render();
 
-    // TODO: Uncomment this code
-    // GraphicsDoc doc2 = doc;
+    //////////////////////////////////////
+    std::cout << "------------------\n";
 
-    // doc2.save("new_drawing.txt");
+    GraphicsDoc doc2 = doc;
+
+    doc.render();
 }

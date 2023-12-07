@@ -6,11 +6,8 @@ using namespace std;
 using namespace Drawing;
 using namespace Drawing::IO;
 
-namespace
-{
-    bool is_registered = SingletonShapeRWFactory::instance()
+static bool is_registered = SingletonShapeRWFactory::instance()
                              .register_creator(make_type_index<Circle>(), [] { return make_unique<CircleReaderWriter>(); });
-}
 
 void CircleReaderWriter::read(Shape& shp, std::istream& in)
 {

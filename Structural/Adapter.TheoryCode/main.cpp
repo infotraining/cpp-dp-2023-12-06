@@ -23,7 +23,6 @@ int main()
     cout << endl;
 
     cout << "-- do_operation on ObjectAdapter" << endl;
-    Adaptee adaptee;
-    ObjectAdapter oadapter(adaptee);
+    ObjectAdapter oadapter(std::make_unique<BetterAdaptee>());
     client.do_operation(oadapter);
 }

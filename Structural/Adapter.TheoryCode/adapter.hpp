@@ -15,9 +15,20 @@ public:
 class Adaptee
 {
 public:
-    void specific_request()
+    virtual ~Adaptee() = default;
+
+    virtual void specific_request()
     {
         std::cout << "Called specific_request()" << std::endl;
+    }
+};
+
+class BetterAdaptee : public Adaptee
+{
+public:
+    void specific_request() override
+    {
+        std::cout << "Called BetterAdaptee::specific_request()" << std::endl;
     }
 };
 
@@ -35,17 +46,17 @@ public:
 class ObjectAdapter : public Target
 {
 private:
-    Adaptee& adaptee_;
+    std::unique_ptr<Adaptee> adaptee_;
 
 public:
-    ObjectAdapter(Adaptee& adaptee)
-        : adaptee_(adaptee)
+    ObjectAdapter(std::unique_ptr<Adaptee> adaptee)
+        : adaptee_(std::move(adaptee))
     {
     }
 
     void request() override
     {
-        adaptee_.specific_request();
+        adaptee_->specific_request();
     }
 };
 
