@@ -1,5 +1,11 @@
 #include "strategy.hpp"
 
+void modern_cpp_strategy()
+{
+    ModernCpp::DataContext data{ModernCpp::CapitalizeFormatter()};
+    data.pretty_print();
+}
+
 int main()
 {
     DataContext data{std::make_shared<UpperCaseFormatter>()};

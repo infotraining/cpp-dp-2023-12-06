@@ -5,18 +5,27 @@
 
 class Engine
 {
+protected:
+    virtual std::unique_ptr<Engine> do_clone() const = 0;
 public:
     virtual void start() = 0;
     virtual void stop() = 0;
-    virtual std::unique_ptr<Engine> clone() const = 0; // prototype - virtual wrapper for copy constructor
+    
+    std::unique_ptr<Engine> clone() const // template method
+    {
+        auto cloned_engine = do_clone(); // step 1 - should be overriden
+        assert(typeid(*this) == typeid(*cloned_engine)); // step 2
+        return cloned_engine;
+    }
+    
     virtual ~Engine() = default;
 };
 
 template <typename TEngine, typename TEngineBase = Engine>
 class CloneableEngine : public TEngineBase
 {
-public:
-    std::unique_ptr<Engine> clone() const override
+protected:
+    std::unique_ptr<Engine> do_clone() const override
     {
         return std::make_unique<TEngine>(static_cast<const TEngine&>(*this)); 
     }

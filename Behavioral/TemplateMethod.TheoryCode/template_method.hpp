@@ -49,13 +49,13 @@ protected:
     virtual void on_success() = 0;
     virtual void on_failure() = 0;
 
-    virtual std::unique_ptr<NotificationService> create_notification_service() const
+    virtual std::unique_ptr<NotificationService> create_notification_service() const // factory method
     {
         return std::make_unique<SmsService>();
     }
 
 public:
-    bool login(const User& user)
+    bool login(const User& user) // template  method
     {
         Code code = generate_secret_code();
 
