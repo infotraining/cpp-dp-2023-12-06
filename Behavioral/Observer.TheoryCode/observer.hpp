@@ -10,7 +10,7 @@ template <typename TSource, typename... TEventArgs>
 class Observer
 {
 public:
-    virtual void update(TSource&, TEventArgs... args) = 0;
+    virtual void update(TSource&, TEventArgs... args) = 0; // model push
     virtual ~Observer() = default;
 };
 
