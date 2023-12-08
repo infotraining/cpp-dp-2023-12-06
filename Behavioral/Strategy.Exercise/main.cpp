@@ -112,7 +112,30 @@ public:
     {
         double sum = std::accumulate(data.begin(), data.end(), 0.0);
 
-        return { {"Sum", sum} };
+        return Results{ {"Sum", sum } };
+    }
+};
+
+class StatGroup : public Statistics
+{
+    std::vector<std::shared_ptr<Statistics>> stats_;
+public:
+    void add(std::shared_ptr<Statistics> stat)
+    {
+        stats_.push_back(stat);
+    }
+
+    Results calculate(const Data& data) override
+    {
+        Results grouped_results;
+
+        for(const auto& stat : stats_)
+        {
+            Results temp_results = stat->calculate(data);
+            grouped_results.insert(grouped_results.end(), std::move_iterator(temp_results.begin()), std::move_iterator(temp_results.end()));
+        }
+
+        return grouped_results;
     }
 };
 
@@ -180,12 +203,12 @@ int main()
     auto min_max = std::make_shared<MinMax>();
     auto sum = std::make_shared<Sum>();
 
-    // auto std_stats = std::make_shared<StatGroup>();
-    // std_stats->add(avg);
-    // std_stats->add(min_max);
-    // std_stats->add(sum);
+    auto std_stats = std::make_shared<StatGroup>();
+    std_stats->add(sum);
+    std_stats->add(avg);
+    std_stats->add(min_max);
 
-    DataAnalyzer da{avg};
+    DataAnalyzer da{std_stats};
     da.load_data("stats_data.dat");
     da.calculate();
 
