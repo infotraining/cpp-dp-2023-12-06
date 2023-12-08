@@ -1,21 +1,23 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
-//#include <boost/flyweight.hpp>
+#include <boost/flyweight.hpp>
 #include <boost/algorithm/string.hpp>
 
 using namespace std;
 
 class Taxpayer
 {
+    struct last_name_tag{};
+
     int id_;
-    std::string first_name_;
-    std::string last_name_;
+    boost::flyweight<std::string> first_name_;
+    boost::flyweight<std::string, boost::flyweights::tag<last_name_tag>> last_name_;
 
 public:
     Taxpayer(int id, std::string fname, std::string lname)
         : id_(id)
-        , first_name_(std::move(fname))
+        , first_name_(std::move(fname)) // ctor flyweight<string>
         , last_name_(std::move(lname))
     {
     }
@@ -27,18 +29,18 @@ public:
 
     string first_name() const
     {
-        return first_name_;
+        return first_name_; // conversion flyweight<string> -> const string&
     }
 
     void set_first_name(const string& fname)
     {
-        first_name_ = fname;
+        first_name_ = fname; // 
     }
 
     void to_upper()
     {
-        boost::to_upper(first_name_);
-        boost::to_upper(last_name_);
+        first_name_ = boost::to_upper_copy(first_name_.get()); // operator= for flyweight
+        last_name_ = boost::to_upper_copy(last_name_.get());
     }
 
     string last_name() const

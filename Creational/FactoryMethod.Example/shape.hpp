@@ -16,8 +16,10 @@ namespace Drawing
         virtual ~Shape() = default;
         virtual void move(int x, int y) = 0;
         virtual void draw() const = 0;
+        
         virtual std::unique_ptr<IO::ShapeReaderWriter> create_reader_writer() = 0;
     };
+
 
     class ShapeBase : public Shape
     {
